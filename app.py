@@ -11,7 +11,6 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-
 model = pickle.load(open("phishing_model.pkl", "rb"))
 
 
@@ -86,44 +85,50 @@ def analyze_url(url):
     parsed = urlparse(url)
     domain = parsed.netloc.lower().replace("www.", "")
 
-   
+    # DNS check
     if not domain_exists(domain):
         reasons.append("Domain does not exist")
 
-   
+    # SSL check
     if not check_ssl(domain):
         reasons.append("No valid SSL certificate")
 
-   
+    # domain age
     age = domain_age(domain)
     if age is not None and age < 30:
         reasons.append("Domain is very new")
 
-    
+    # IP detection
     if re.search(r'(\d{1,3}\.){3}\d{1,3}', domain):
         reasons.append("URL contains IP address")
 
-    
+    # suspicious keywords
     keywords = ["login","verify","secure","bank","update"]
     if any(k in url.lower() for k in keywords):
         reasons.append("Suspicious keywords detected")
 
-    
+    # suspicious domain extensions
     suspicious_tlds = [".xyz",".tk",".ml",".ga",".cf",".top"]
     if any(domain.endswith(tld) for tld in suspicious_tlds):
         reasons.append("Suspicious domain extension")
 
-    
+    # URL SHORTENER DETECTION
+    shorteners = ["bit.ly","tinyurl","goo.gl","ow.ly","t.co","is.gd","buff.ly"]
+    if any(s in domain for s in shorteners):
+        reasons.append("URL shortener detected (can hide phishing links)")
+
+    # brand impersonation
     brand_check = detect_brand_impersonation(domain)
     if brand_check:
         reasons.append(brand_check)
 
-    
+    # typosquatting
     typo_check = detect_typosquatting(domain)
     if typo_check:
         reasons.append(typo_check)
 
     return reasons
+
 
 def extract_features(url):
 
@@ -153,21 +158,22 @@ def home():
 
         url = request.form["url"].strip()
 
-        
+        # auto add https
         if not url.startswith("http"):
             url = "https://" + url
 
-        
+        # basic validation
         if not re.match(r'https?://[^\s]+\.[^\s]+', url):
             result = "❌ Invalid URL"
             return render_template("index.html", result=result)
 
-        
+        # analyze URL
         reasons = analyze_url(url)
 
+        # risk score
         risk = min(len(reasons) * 20, 100)
 
-        
+        # ML prediction
         features = extract_features(url)
         prediction = model.predict(features)[0]
 
@@ -187,4 +193,4 @@ def home():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",port=10000)
+    app.run(host="0.0.0.0", port=10000)
