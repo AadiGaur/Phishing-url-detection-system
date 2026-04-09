@@ -6,8 +6,11 @@ import whois
 import ssl
 import socket
 import difflib
+import smtplib
 from urllib.parse import urlparse
 from datetime import datetime
+from email.mime.text import MIMEText
+from flask_mail import Mail, Message
 
 app = Flask(__name__)
 
@@ -198,7 +201,7 @@ def home():
 def about():
     return render_template("about.html")
 
-@app.route("/help", methods=["GET","POST"])
+@app.route("/help", methods=["GET", "POST"])
 def help():
 
     if request.method == "POST":
@@ -209,15 +212,39 @@ def help():
         category = request.form["category"]
         message = request.form["message"]
 
-        with open("message.txt", "a") as f:
-            f.write(f"\nName: {name}\n")
-            f.write(f"Email: {email}\n")
-            f.write(f"Subject: {subject}\n")
-            f.write(f"Category: {category}\n")
-            f.write(f"Message: {message}\n")
-            f.write("---------------------\n")
+        # Email content
+        email_body = f"""
+New Help Request Received
 
-        return render_template("help.html", success="Message sent successfully")
+Name: {name}
+Email: {email}
+Subject: {subject}
+Category: {category}
+
+Message:
+{message}
+"""
+
+        try:
+            msg = MIMEText(email_body)
+            msg["Subject"] = f"Help Form: {subject}"
+            msg["From"] = "yourgmail@gmail.com"
+            msg["To"] = "gaur.edu1970@gmail.com"
+            msg["Reply-To"] = email
+
+            server = smtplib.SMTP("smtp.gmail.com", 587)
+            server.starttls()
+
+            server.login("gaur.edu1970@gmail.com", "dxku miqd evda jtnp")
+
+            server.send_message(msg)
+            server.quit()
+
+            return render_template("help.html", success="Message sent successfully!")
+
+        except Exception as e:
+            print(e)
+            return render_template("help.html", success="Error sending message.")
 
     return render_template("help.html")
 
