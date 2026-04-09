@@ -1,5 +1,6 @@
 flask
 gunicorn
+flask-Mail
 pandas
 numpy
 scikit-learn
