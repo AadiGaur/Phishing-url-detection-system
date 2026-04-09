@@ -1,77 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<title>PhishDetector</title>
+<title>Phishing URL Detector</title>
+
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 
 <body>
 
-<!-- HEADER -->
-<header class="navbar">
+<!-- NAVBAR -->
 
-<h2 class="logo">PHISHINGDETECTOR</h2>
+<nav class="navbar">
 
-<nav>
-<a href="#">Home</a>
-<a href="#">About</a>
-<a href="#">Usecases</a>
-<a href="#">Help</a>
+<div class="logo">
+PHISHINGDETECTOR
+</div>
+
+<ul class="nav-links">
+<li><a href="/">Home</a></li>
+<li><a href="/about">About</a></li>
+<li><a href="/usecases">Usecases</a></li>
+<li><a href="/help">Help</a></li>
+</ul>
+
 </nav>
 
-</header>
 
 
-<!-- MAIN SECTION -->
-<div class="container">
-    <div class="card">
+<!-- HERO SECTION -->
 
-<h1 class="title">Phishing URL Detection</h1>
+<section class="hero">
 
-<p class="desc">Check whether a website link is safe or malicious</p>
+<h1>Phishing URL Detection</h1>
 
-<form method="POST">
+<p class="subtitle">
+Check whether a website link is safe or malicious
+</p>
 
-<div class="input-group">
 
-<input type="text" name="url" placeholder="Enter a URL link in format http or https" required>
+<!-- SCANNER BOX -->
 
-<button type="submit">Scan URL</button>
+<div class="scan-box">
 
-</div>
+<form method="POST" onsubmit="showScanner()">
+
+<input
+type="text"
+name="url"
+placeholder="Enter a URL link in format http or https"
+required
+>
+
+<button type="submit">
+Scan URL
+</button>
 
 </form>
 
 
+<!-- SCANNING ANIMATION -->
+
+<div id="scanner" class="scanner hidden">
+
+<div class="scan-bar"></div>
+
+<p>Scanning URL...</p>
+
+</div>
+
+
+<!-- RESULT INSIDE SAME BOX -->
+
 {% if result %}
 
-<div class="result-box">
+<div class="scan-result">
 
-<p class="checked-url">{{ request.form.url }}</p>
+<p class="checked-url">
+{{ url }}
+</p>
 
-<h2 class="result-text">{{ result }}</h2>
+<h2>{{ result }}</h2>
 
-{% if risk is not none %}
-<p class="risk">Risk Score: {{ risk }}%</p>
-{% endif %}
+<p>Risk Score: {{ risk }}%</p>
 
 {% if reasons %}
-<h3>Reasons:</h3>
 <ul>
-{% for r in reasons %}
-<li>{{ r }}</li>
+{% for reason in reasons %}
+<li>{{ reason }}</li>
 {% endfor %}
 </ul>
 {% endif %}
 
-
 </div>
 
 {% endif %}
 
 </div>
+
+
+<div class="stats">
+
+<div class="stat-card">
+<h2>10+</h2>
+<p>URLs Scanned</p>
 </div>
+
+<div class="stat-card">
+<h2>98.67%</h2>
+<p>Accuracy</p>
+</div>
+
+<div class="stat-card">
+<h2>24/7</h2>
+<p>Protection</p>
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- SCANNER SCRIPT -->
+
+<script>
+
+function showScanner(){
+
+document.getElementById("scanner").classList.remove("hidden");
+
+}
+
+</script>
 
 </body>
 </html>
