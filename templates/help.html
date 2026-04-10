@@ -90,23 +90,95 @@
 <section class="faq-section">
 
 <h2>Frequently Asked Questions</h2>
-<p>Quick answers to questions you may have</p>
 
-<div class="faq-container">
+<div class="faq">
 
-<div class="faq-item">How does the phishing detection work?</div>
+<button class="faq-question">
+What is phishing?
+</button>
 
-<div class="faq-item">How accurate is the phishing detection?</div>
+<div class="faq-answer">
+Phishing is a cyber attack where attackers create fake websites or emails to steal sensitive information like passwords, credit card details, or personal data.
+</div>
 
-<div class="faq-item">Is my data secure when I use this service?</div>
+</div>
 
-<div class="faq-item">Can I scan multiple URLs at once?</div>
 
-<div class="faq-item">What should I do if a URL is marked unsafe?</div>
+<div class="faq">
+
+<button class="faq-question">
+How does this phishing detection system work?
+</button>
+
+<div class="faq-answer">
+The system analyzes URL features such as length, special characters, domain structure, and security indicators. These features are passed to a trained Machine Learning model (Random Forest) which predicts whether the website is legitimate or phishing.
+</div>
+
+</div>
+
+
+<div class="faq">
+
+<button class="faq-question">
+What machine learning algorithm is used?
+</button>
+
+<div class="faq-answer">
+This system uses the Random Forest algorithm because it performs well on structured datasets and reduces overfitting by combining multiple decision trees.
+</div>
+
+</div>
+
+
+<div class="faq">
+
+<button class="faq-question">
+Is the detection result always accurate?
+</button>
+
+<div class="faq-answer">
+The system provides approximately 98% accuracy based on the training dataset. However, phishing techniques evolve constantly, so results should be used as guidance rather than absolute confirmation.
+</div>
+
+</div>
+
+
+<div class="faq">
+
+<button class="faq-question">
+Do you store the URLs submitted by users?
+</button>
+
+<div class="faq-answer">
+No. The system only analyzes the URL temporarily for prediction and does not store user data.
+</div>
 
 </div>
 
 </section>
+
+<script>
+
+const faqQuestions = document.querySelectorAll(".faq-question");
+
+faqQuestions.forEach(question => {
+
+question.addEventListener("click", () => {
+
+const answer = question.nextElementSibling;
+
+if(answer.style.display === "block"){
+answer.style.display = "none";
+}
+else{
+answer.style.display = "block";
+}
+
+});
+
+});
+
+</script>
 
 
 </body>
